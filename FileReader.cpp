@@ -14,8 +14,9 @@ vector<string> file_reader(ifstream& Ifile) {
 
 			getline(Ifile, file_line);
 
-			result.push_back(file_line);
-
+			if (file_line.length() > 0) {
+				result.push_back(file_line);
+			}
 		}
 
 	}

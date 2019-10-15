@@ -47,6 +47,18 @@
     <None Include="samples\tinypix.ppm">
       <Filter>Resource Files\samples</Filter>
     </None>
+    <None Include="test.ppm">
+      <Filter>Resource Files\samples</Filter>
+    </None>
+    <None Include="test1.ppm">
+      <Filter>Resource Files\samples</Filter>
+    </None>
+    <None Include="removered.ppm">
+      <Filter>Resource Files\samples</Filter>
+    </None>
+    <None Include="testb.ppm">
+      <Filter>Resource Files\samples</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PpmDoc.hpp">

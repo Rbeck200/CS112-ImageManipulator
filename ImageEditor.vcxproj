@@ -127,6 +127,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="removered.ppm" />
     <None Include="samples\blocks.ppm" />
     <None Include="samples\bunny.ppm" />
     <None Include="samples\bunny2.ppm" />
@@ -134,6 +135,9 @@
     <None Include="samples\smiley.ppm" />
     <None Include="samples\squares.ppm" />
     <None Include="samples\tinypix.ppm" />
+    <None Include="test.ppm" />
+    <None Include="test1.ppm" />
+    <None Include="testb.ppm" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileReader.h" />
