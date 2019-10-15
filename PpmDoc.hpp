@@ -65,11 +65,14 @@ public:
 			for (int i = 3; i < temp_data.size(); i++) {
 				if (temp_data[i].length() > 0) {
 					istringstream line_data{ temp_data[i] };
-					while (line_data.eof() == false ) {
+					while (line_data.eof() == false) {
 						Pixel a;
 						line_data >> a;
 						checkDocValidity(line_data);
-						_pixel_data.push_back(a);
+						if (a.checkPixel == true) {
+							_pixel_data.push_back(a);
+						}
+						
 					}
 				}
 			}

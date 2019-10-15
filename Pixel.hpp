@@ -96,12 +96,19 @@ public:
 		temp = (_red + _green + _blue)/3;
 		setPixel(temp, temp, temp);
 	}
+
+	bool checkPixel() {
+		if (_red == -1 || _green == -1 || _blue == -1){
+			return false;
+		}
+		return true;
+	}
 };
 
 istream& operator>>(istream& stream, Pixel& pixel){
-	int r = 0;
-	int g = 0;
-	int b = 0;
+	int r = -1;
+	int g = -1;
+	int b = -1;
 	stream >> r >> g >> b;
 	pixel.setPixel(r, g, b);
 	return stream;
