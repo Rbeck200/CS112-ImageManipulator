@@ -98,7 +98,7 @@ public:
 	}
 
 	bool checkPixel() {
-		if (_red == -1 || _green == -1 || _blue == -1){
+		if (_red == -1 || _green == -1 || _blue == -1) {
 			return false;
 		}
 		return true;
@@ -106,11 +106,15 @@ public:
 };
 
 istream& operator>>(istream& stream, Pixel& pixel){
-	int r = -1;
-	int g = -1;
-	int b = -1;
-	stream >> r >> g >> b;
-	pixel.setPixel(r, g, b);
+	if (stream.good() == true) {
+		int r = -1;
+		int g = -1;
+		int b = -1;
+		stream >> r >> g >> b;
+		pixel.setPixel(r, g, b);
+	}else {
+		throw exception{ "Bad Stream Format" };
+	}
 	return stream;
 }
 
