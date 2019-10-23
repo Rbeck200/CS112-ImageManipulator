@@ -32,6 +32,15 @@ int main(int argc, char* argv[])
 	cin >> new_filename;
 	cout << endl;
 
+	//read filename into PpmDoc class
+	ppm = PpmDoc{ temp_filename };
+
+	// Rename the ppm to the name we want to save it as.
+	ppm.setFilename(new_filename);
+
+	//Make Output File
+	ofstream output{ new_filename };
+
 	//getter for selection_num
 	cout << "*** Image Effects ***" << endl
 		<< "1. Remove Red" << endl
@@ -40,27 +49,27 @@ int main(int argc, char* argv[])
 		<< "4. Negate Red" << endl
 		<< "5. Negate Green" << endl
 		<< "6. Negate Blue" << endl
-		<< "7. Grayscale" << endl;
-	cout << endl;
-	cout << "Selection: ";
-	cin >> selection_num;
-	cout << endl;
-
-	//read filename into PpmDoc class
-	ppm = PpmDoc{ temp_filename };
-
-	// Rename the ppm to the name we want to save it as.
-	ppm.setFilename(new_filename);
+		<< "7. Grayscale" << endl
+		<< "8. Random Noise" << endl
+		<< "9. High Contrast" << endl
+		<< "Enter '0' to exit" << endl;
+	
 
 	//Manipulate the ppm based on the users selection
-	ppm.ImageManip(selection_num);
+	//Keep making edits to the ppm until the user decides to stop
+	do {
+		cout << endl << "Selection: ";
+		cin >> selection_num;
+		ppm.ImageManip(selection_num);
+		cout << endl;
+		
+	} while (selection_num != 0);
 
-	//output the ppm to a new ppm file
-	ofstream output{ new_filename };
+	//Shove the ppm information into our output file
 	output << ppm;
+
+	//Close the output file
 	output.close();
 
-	//finish program
-	cout << "Done. Program complete.";
 	return 0;
 }

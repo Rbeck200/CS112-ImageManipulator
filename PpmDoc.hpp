@@ -103,29 +103,29 @@ public:
 			for (int i = 3; i < temp_data.size(); i++) {
 				//if (temp_data[i].length() > 0) {
 
-					//seperate the data on each line and make them integers when we put them into the pixel
-					istringstream line_data{ temp_data[i] };
+				//seperate the data on each line and make them integers when we put them into the pixel
+				istringstream line_data{ temp_data[i] };
 
-					//while the line hasn't ended do this
-					while (line_data.eof() == false ) {
+				//while the line hasn't ended do this
+				while (line_data.eof() == false ) {
 
-						//call basic pixel
-						Pixel a;
+					//call basic pixel
+					Pixel a;
+
+					//sets max color value inside of pixel
+					a.setMax(getColorVal());
+
+					// take the next values on the line and put them into the pixel
+					line_data >> a;
 						
-						// take the next values on the line and put them into the pixel
-						line_data >> a;
+					//error check
+					checkDocValidity(line_data);
 
-						//error check
-						checkDocValidity(line_data);
-
-						//error check
-						if (a.checkPixel() == true) {
-							//add pixel to vector
+					// error check to see if pixel was populated
+					if (a.checkPixel() == true) {
 							_pixel_data.push_back(a);
-						}
-						
 					}
-				
+				}
 			}
 		}
 	}
@@ -196,6 +196,20 @@ public:
 		}
 	}
 
+	//adds random noise for all Pixels in pixel vector
+	void noisePixels() {
+		for (auto& Pixel : _pixel_data) {
+			Pixel.randomNoise();
+		}
+	}
+
+	//changes contrast to high for all Pixels in pixel vector
+	void contrastPixels() {
+		for (auto& Pixel : _pixel_data) {
+			Pixel.pixelContrast();
+		}
+	}
+
 	//takes int as parameter to choose how to edit the picture
 	void ImageManip(const int& selection) {
 		try {
@@ -203,37 +217,51 @@ public:
 				//remove red from pixels
 			case 1:
 				removePixels('r');
-				cout << "Applying Remove Red effect..." << endl;
+				cout << "Applying Remove Red effect..." ;
 				break;
 			case 2:
 				//remove green from pixels
 				removePixels('g');
-				cout << "Applying Remove Green effect..." << endl;
+				cout << "Applying Remove Green effect..." ;
 				break;
 			case 3:
 				//remove blue from pixels
 				removePixels('b');
-				cout << "Applying Remove Blue effect..." << endl;
+				cout << "Applying Remove Blue effect..." ;
 				break;
 			case 4:
 				//negate red from pixels
 				negatePixels('r');
-				cout << "Applying Negate Red effect..." << endl;
+				cout << "Applying Negate Red effect..." ;
 				break;
 			case 5:
 				//negate green from pixels
 				negatePixels('g');
-				cout << "Applying Negate Green effect..." << endl;
+				cout << "Applying Negate Green effect..." ;
 				break;
 			case 6:
 				//negate blue from pixels
 				negatePixels('b');
-				cout << "Applying Negate Blue effect..." << endl;
+				cout << "Applying Negate Blue effect..." ;
 				break;
 			case 7:
 				//greyscale picture
 				grayscalePixels();
-				cout << "Applying Grayscale effect..." << endl;
+				cout << "Applying Grayscale effect..." ;
+				break;
+			case 8:
+				//Add random noise to picture
+				noisePixels();
+				cout << "Applying Random Noise effect..." ;
+				break;
+			case 9:
+				//Add high constrast to picture
+				contrastPixels();
+				cout << "Applying High Constrast effect..." ;
+				break;
+			case 0:
+				//Choice to exit the function
+				cout << "Done. Exiting Program...";
 				break;
 			default:
 				//No selection made

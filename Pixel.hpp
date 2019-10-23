@@ -25,11 +25,14 @@ private:
 	//color value for blue in pixel
 	int _blue = 0;
 
+	//max integer one of our color values can be
+	int _max_value = 0;
+
 
 
 public:
 	//constructor for the pixel
-	Pixel(int red, int green, int blue) {
+	Pixel(int max, int red, int green, int blue) {
 		setPixel(red, green, blue);
 	}
 
@@ -39,7 +42,7 @@ public:
 
 	//setter for red value
 	void setRed(const int& red) {
-		_red = red;
+		_red = valueCheck(red);
 	}
 
 	//getter for red value
@@ -49,7 +52,7 @@ public:
 
 	//setter for green value
 	void setGreen(const int& green) {
-		_green = green;
+		_green = valueCheck(green);
 	}
 
 	//getter for green value
@@ -59,12 +62,22 @@ public:
 
 	//setter for blue value
 	void setBlue(const int& blue) {
-		_blue = blue;
+		_blue = valueCheck(blue);
 	}
 
 	//getter for blue value
 	int getBlue() {
 		return _blue;
+	}
+
+	//setter for max color value
+	void setMax(const int& max) {
+		_max_value = max;
+	}
+
+	//getter for max color value
+	int getMax() {
+		return _max_value;
 	}
 
 	//setter for all pixel values
@@ -79,14 +92,13 @@ public:
 		
 		switch (color) {
 		case 'r': 			
-				_red = 0;		
+				setRed(0);		
 				  break;
 		case 'g': 			
-				_green = 0;
-			
+				setGreen(0);
 				  break;
 		case 'b': 
-				_blue = 0;
+				setBlue(0);
 				  break;
 		}
 	}	
@@ -95,14 +107,14 @@ public:
 	void negateColor(const char& color) {
 			switch (color) {
 			case 'r':
-				_red = 255 - _red;
+				setRed(255 - _red);
 				break;
 			case 'g':
-				_green = 255 - _green;
+				setGreen(255 - _green);
 
 				break;
 			case 'b':
-				_blue = 255 - _blue;
+				setBlue(255 - _blue);
 				break;
 			}
 	}
@@ -110,25 +122,65 @@ public:
 	//greyscales the image by averaging its values and setting and setting ALL of the values to the result
 	void grayscale() {
 		int temp = 0;
-		temp = (_red + _green + _blue)/3;
+		temp = (getRed() + getGreen() + getBlue())/3;
 		setPixel(temp, temp, temp);
+	}
+
+	// Generates a random number from -10 to 10 and adds it to each value of a pixel
+	void randomNoise() {
+		int noise = (rand() % 21) - 10;
+		setPixel((getRed() + (noise)), 
+			((getGreen() + (noise))), 
+			((getBlue() + (noise))));
+	}
+
+	// Calculates high contrast for single color value
+	int highContrast(const int& color, const int& max_color_val) {
+		int result = 0;
+		if (color > (max_color_val/2)) {
+			result = max_color_val;
+		}
+		return result;
+	}
+
+	//sets pixel to values derived from highContrast()
+	void pixelContrast() {
+		setPixel(highContrast(getRed(), _max_value), 
+			highContrast(getGreen(), _max_value),
+			highContrast(getBlue(), _max_value));
+	}
+
+	//error check to see if the pixel is inbetween our bounds i.e. 0 to _max_value
+	int valueCheck(const int& color) {
+		int result = color;
+		//less than zero 
+		if (color < 0 && color > -_max_value) {
+			result = 0;
+		}
+		if (color > _max_value) {
+			result = _max_value;
+		}
+		return result;
 	}
 
 	//error check to see if pixel was populated with data
 	bool checkPixel() {
-		if (_red == -1 || _green == -1 || _blue == -1) {
+		if (_red == (-(_max_value) - 1) 
+			|| _green == (-(_max_value)-1) 
+			|| _blue == (-(_max_value)-1)) {
 			return false;
 		}
 		return true;
 	}
+	friend istream& operator>>(istream& stream, Pixel& pixel);
 };
 
 //write to a pixel
 istream& operator>>(istream& stream, Pixel& pixel){
 	//sets local variables in the function
-		int r = -1;
-		int g = -1;
-		int b = -1;
+		int r = -(pixel._max_value) - 1;
+		int g = -(pixel._max_value) - 1;
+		int b = -(pixel._max_value) - 1;
 
 	// passes the data from the stream into variables
 		stream >> r >> g >> b;
@@ -141,7 +193,9 @@ istream& operator>>(istream& stream, Pixel& pixel){
 
 //writes a pixel out to a file
 ostream& operator<<(ostream& stream, Pixel& pixel){
-	stream << pixel.getRed() << " " << pixel.getGreen() << " " << pixel.getBlue();
+	stream << pixel.getRed() 
+		<< " " << pixel.getGreen() 
+		<< " " << pixel.getBlue();
 	return stream;
 }
 
