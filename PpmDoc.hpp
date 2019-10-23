@@ -13,11 +13,8 @@
 using namespace std;
 
 class PpmDoc {
-
 private:
-
 	//names for variables come from ppm specs online - http://netpbm.sourceforge.net/doc/ppm.html 
-
 	//The format of the ppm document (only allows P3 or P6) 
 	string _magic_number;
 
@@ -42,8 +39,7 @@ private:
 			if (stream.good() == false && stream.eof() == false) {
 				throw exception{ "Invalid PPM Specifications." };
 			}
-		}
-		catch (const char* msg) {
+		}catch (const char* msg) {
 			cerr << msg << endl;
 		}
 	}
@@ -60,7 +56,6 @@ public:
 
 	//function to read file into data
 	void open(string filename) {
-
 		//sets ppm _file_name
 		_file_name = filename;
 
@@ -69,12 +64,8 @@ public:
 
 		//error check to see if file was read correctly
 		if (temp_data.size() == 0) {
-
 			throw exception{ "Invalid PPM Specifications." };
-
-		}
-		else {
-
+		}else {
 			//set magic number
 			_magic_number = temp_data[0];
 
@@ -101,14 +92,11 @@ public:
 
 			//read the color data and make them a vector of pixels
 			for (int i = 3; i < temp_data.size(); i++) {
-				//if (temp_data[i].length() > 0) {
-
 				//seperate the data on each line and make them integers when we put them into the pixel
 				istringstream line_data{ temp_data[i] };
 
 				//while the line hasn't ended do this
 				while (line_data.eof() == false ) {
-
 					//call basic pixel
 					Pixel a;
 
@@ -140,12 +128,10 @@ public:
 		try {
 			if (num == "P3" || num == "P6") {
 				_magic_number = num;
-			}
-			else {
+			}else {
 				throw exception{ "Invalid PPM Specifications." };
 			}
-		}
-		catch (const char* msg) {
+		}catch (const char* msg) {
 			cerr << msg << endl;
 		}
 	}

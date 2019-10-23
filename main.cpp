@@ -9,8 +9,7 @@
 using namespace std;
 
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
 	//name of file we are working on
 	string temp_filename;
 
@@ -54,15 +53,13 @@ int main(int argc, char* argv[])
 		<< "9. High Contrast" << endl
 		<< "Enter '0' to exit" << endl;
 	
-
 	//Manipulate the ppm based on the users selection
 	//Keep making edits to the ppm until the user decides to stop
 	do {
 		cout << endl << "Selection: ";
 		cin >> selection_num;
 		ppm.ImageManip(selection_num);
-		cout << endl;
-		
+		cout << endl;	
 	} while (selection_num != 0);
 
 	//Shove the ppm information into our output file
@@ -70,6 +67,5 @@ int main(int argc, char* argv[])
 
 	//Close the output file
 	output.close();
-
 	return 0;
 }

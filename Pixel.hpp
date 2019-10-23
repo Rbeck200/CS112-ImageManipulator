@@ -11,11 +11,8 @@
 #include "FileReader.h";
 using namespace std;
 
-class Pixel
-{
-
+class Pixel{
 private:
-
 	//color value for red in pixel
 	int _red = 0;
 
@@ -27,8 +24,6 @@ private:
 
 	//max integer one of our color values can be
 	int _max_value = 0;
-
-
 
 public:
 	//constructor for the pixel
@@ -89,7 +84,6 @@ public:
 
 	//remove a color by setting its value to zero based on what char is passed to it
 	void removeColor(const char& color) {
-		
 		switch (color) {
 		case 'r': 			
 				setRed(0);		
@@ -164,14 +158,20 @@ public:
 	}
 
 	//error check to see if pixel was populated with data
+	//if not populated it will equal negative of the max color value minus one
+	//as to always have a number that will be out of bounds (because we could
+	//change the parameters on teh contrast function to make it more than -10 
+	//to 10, but it will always have less than the max value, which means it
+	//always has to be more than the negative max value.)
 	bool checkPixel() {
-		if (_red == (-(_max_value) - 1) 
-			|| _green == (-(_max_value)-1) 
+		if (_red == (-(_max_value)-1)
+			|| _green == (-(_max_value)-1)
 			|| _blue == (-(_max_value)-1)) {
 			return false;
 		}
 		return true;
 	}
+
 	friend istream& operator>>(istream& stream, Pixel& pixel);
 };
 
@@ -187,7 +187,6 @@ istream& operator>>(istream& stream, Pixel& pixel){
 
 	//calls setPixel
 		pixel.setPixel(r, g, b);
-
 	return stream;
 }
 
@@ -198,5 +197,4 @@ ostream& operator<<(ostream& stream, Pixel& pixel){
 		<< " " << pixel.getBlue();
 	return stream;
 }
-
 #endif // !PIXEL_HPP
