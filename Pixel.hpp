@@ -148,7 +148,7 @@ public:
 	int valueCheck(const int& color) {
 		int result = color;
 		//less than zero 
-		if (color < 0 && color > -_max_value) {
+		if (color < 0 && color >= -_max_value) {
 			result = 0;
 		}
 		if (color > _max_value) {

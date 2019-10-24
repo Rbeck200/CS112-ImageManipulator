@@ -10,6 +10,7 @@ using namespace std;
 
 
 int main(int argc, char* argv[]){
+	///*
 	//name of file we are working on
 	string temp_filename;
 
@@ -51,7 +52,8 @@ int main(int argc, char* argv[]){
 		<< "7. Grayscale" << endl
 		<< "8. Random Noise" << endl
 		<< "9. High Contrast" << endl
-		<< "Enter '0' to exit" << endl;
+		<< "You can choose as many different edits as you want." << endl
+		<< "Please, enter '0' to exit." << endl;
 	
 	//Manipulate the ppm based on the users selection
 	//Keep making edits to the ppm until the user decides to stop
@@ -67,5 +69,6 @@ int main(int argc, char* argv[]){
 
 	//Close the output file
 	output.close();
+	//*/
 	return 0;
 }

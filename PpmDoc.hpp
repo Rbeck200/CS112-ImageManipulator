@@ -290,7 +290,6 @@ ostream& operator<<(ostream& stream, const PpmDoc& ppm) {
 		}else {
 			stream << " ";
 		}
-		
 	}
 		return stream;
 }
