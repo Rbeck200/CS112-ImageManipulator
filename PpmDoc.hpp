@@ -30,8 +30,11 @@ private:
 	//The name of the file
 	string _file_name;
 
-	//Vector of Pixels
-	vector<Pixel> _pixel_data;
+	// A vector that contains vectors of pixels
+	//Not needed for basic edits, cases 1-9 in ImageManip function 
+	//1-9 can be achived using a vector of pixels and some more lines of code for formatting 
+	//but needed for the more complex edits
+	vector<vector<Pixel>> _line_data;
 
 	//error check to see if file was input correctly
 	void checkDocValidity(istream& stream) {
@@ -42,6 +45,16 @@ private:
 		}catch (const char* msg) {
 			cerr << msg << endl;
 		}
+	}
+
+	//sets the width of the ppm file
+	void setWidth(const int& w) {
+		_width = w;
+	}
+
+	//sets the height of the ppm file
+	void setHeight(const int& h) {
+		_height = h;
 	}
 
 public:
@@ -65,9 +78,13 @@ public:
 		//error check to see if file was read correctly
 		if (temp_data.size() == 0) {
 			throw exception{ "Invalid PPM Specifications." };
-		}else {
+		}
+		else {
 			//set magic number
 			_magic_number = temp_data[0];
+
+			//Vector of Pixels
+			vector<Pixel> _pixel_data;
 
 			//seperate the second line to get the width and height seperately and make them ints instead of strings
 			istringstream line{ temp_data[1] };
@@ -112,6 +129,11 @@ public:
 					// error check to see if pixel was populated
 					if (a.checkPixel() == true) {
 							_pixel_data.push_back(a);
+					}
+
+					if ((_pixel_data.size() % getWidth() == 0) && _pixel_data.size() > 0) {
+						_line_data.push_back(_pixel_data);
+						_pixel_data.clear();
 					}
 				}
 			}
@@ -163,37 +185,100 @@ public:
 
 	//remove color for all Pixels in pixel vector
 	void removePixels(const char& color) {
-		for (auto& Pixel : _pixel_data) {
-			Pixel.removeColor(color);
+		for (int i = 0; i < _line_data.size(); i++) {
+			for (auto& Pixel : _line_data[i]) {
+				Pixel.removeColor(color);
+			}
 		}
 	}
 	
 	//negate color for all Pixels in pixel vector
 	void negatePixels(const char& color) {
-		for (auto& Pixel : _pixel_data) {
-			Pixel.negateColor(color);
+		for (int i = 0; i < _line_data.size(); i++) {
+			for (auto& Pixel : _line_data[i]) {
+				Pixel.negateColor(color);
+			}
 		}
 	}
 
 	//greyscale color for all Pixels in pixel vector
 	void grayscalePixels() {
-		for (auto& Pixel : _pixel_data) {
-			Pixel.grayscale();
+		for (int i = 0; i < _line_data.size(); i++) {
+			for (auto& Pixel : _line_data[i]) {
+				Pixel.grayscale();
+			}
 		}
 	}
 
 	//adds random noise for all Pixels in pixel vector
 	void noisePixels() {
-		for (auto& Pixel : _pixel_data) {
-			Pixel.randomNoise();
+		for (int i = 0; i < _line_data.size(); i++) {
+			for (auto& Pixel : _line_data[i]) {
+				Pixel.randomNoise();
+			}
 		}
 	}
 
 	//changes contrast to high for all Pixels in pixel vector
 	void contrastPixels() {
-		for (auto& Pixel : _pixel_data) {
-			Pixel.pixelContrast();
+		for (int i = 0; i < _line_data.size(); i++) {
+			for (auto& Pixel : _line_data[i]) {
+				Pixel.pixelContrast();
+			}
 		}
+	}
+
+	//Flips the picture across the x-axis
+	void hor_Flip() {
+		vector<vector<Pixel>> temp_data;
+		for (int j = 0; j < getHeight(); j++) {
+			vector<Pixel> temp_line;
+			for (int i = getWidth() - 1; i == 0; i--) {
+				temp_line.push_back(_line_data[j][i]);
+			}
+			temp_data.push_back(temp_line);
+		}
+		_line_data.clear();
+		_line_data = temp_data;
+	}
+
+	//Flips the picture across the y-axis
+	void ver_flip() {
+		vector<vector<Pixel>> temp_data;
+		for (int j = (getHeight() - 1); j == 0; j++) {
+			temp_data.push_back(_line_data[j]);
+		}
+		_line_data.clear();
+		_line_data = temp_data;
+	}
+
+	//Rotates the picture 90 Degrees clock-wise
+	void rotate_90() {
+		vector<vector<Pixel>> temp_data;
+		int temp = 0;
+		for (int i = 0; i < getWidth(); i++) {
+			vector<Pixel> temp_line;
+			for (int j = (getHeight() - 1); j == 0; j--) {
+				temp_line.push_back(_line_data[j][i]);
+			}
+			temp_data.push_back(temp_line);
+		}
+		_line_data.clear();
+		_line_data = temp_data;
+		setWidth(getHeight());
+		setHeight(_line_data.size());
+	}
+
+	//Rotates the picture 180 Degrees clock-wise
+	void rotate_180() {
+		hor_Flip();
+		ver_flip();
+	}
+
+	//Rotates the picture 270 Degrees clock-wise
+	void rotate_270() {
+		rotate_180();
+		rotate_90();
 	}
 
 	//takes int as parameter to choose how to edit the picture
@@ -277,21 +362,17 @@ ostream& operator<<(ostream& stream, const PpmDoc& ppm) {
 	//put in color value
 	stream << ppm.getColorVal() << endl;
 
-	//counter to arrange rows with the ammount of pixels as the width
-	int width_counter = 1;
-
 	//read all pixels to the stream
-	for (auto Pixel : ppm._pixel_data) {
-		width_counter++;
-		stream << Pixel;
-		if (width_counter > ppm._width) {
-			stream << endl;
-			width_counter = 1;
-		}else {
+
+	for (auto vector : ppm._line_data) {
+		for (int i = 0; i < vector.size(); i++) {
+			stream << vector[i];
 			stream << " ";
 		}
+		stream << endl;
 	}
-		return stream;
+
+	return stream;
 }
 
 
