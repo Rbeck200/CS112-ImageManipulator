@@ -52,6 +52,12 @@ int main(int argc, char* argv[]){
 		<< "7. Grayscale" << endl
 		<< "8. Random Noise" << endl
 		<< "9. High Contrast" << endl
+		<< "10. Horizontal Flip" << endl
+		<< "11. Vertical Flip" << endl
+		<< "12. Rotate 90 Degrees (Clockwise)" << endl
+		<< "13. Rotate 180 Degrees (Clockwise)" << endl
+		<< "14. Rotate 270 Degrees (Clockwise)" << endl
+		<< "16. Blur the image" << endl
 		<< "You can choose as many different edits as you want." << endl
 		<< "Please, enter '0' to exit." << endl;
 	

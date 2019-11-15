@@ -229,11 +229,11 @@ public:
 	}
 
 	//Flips the picture across the x-axis
-	void hor_Flip() {
+	void hor_flip() {
 		vector<vector<Pixel>> temp_data;
 		for (int j = 0; j < getHeight(); j++) {
 			vector<Pixel> temp_line;
-			for (int i = getWidth() - 1; i == 0; i--) {
+			for (int i = (getWidth() - 1); i >= 0; i--) {
 				temp_line.push_back(_line_data[j][i]);
 			}
 			temp_data.push_back(temp_line);
@@ -245,7 +245,7 @@ public:
 	//Flips the picture across the y-axis
 	void ver_flip() {
 		vector<vector<Pixel>> temp_data;
-		for (int j = (getHeight() - 1); j == 0; j++) {
+		for (int j = (getHeight() - 1); j >= 0; j--) {
 			temp_data.push_back(_line_data[j]);
 		}
 		_line_data.clear();
@@ -258,7 +258,7 @@ public:
 		int temp = 0;
 		for (int i = 0; i < getWidth(); i++) {
 			vector<Pixel> temp_line;
-			for (int j = (getHeight() - 1); j == 0; j--) {
+			for (int j = (getHeight() - 1); j >= 0; j--) {
 				temp_line.push_back(_line_data[j][i]);
 			}
 			temp_data.push_back(temp_line);
@@ -271,7 +271,7 @@ public:
 
 	//Rotates the picture 180 Degrees clock-wise
 	void rotate_180() {
-		hor_Flip();
+		hor_flip();
 		ver_flip();
 	}
 
@@ -279,6 +279,93 @@ public:
 	void rotate_270() {
 		rotate_180();
 		rotate_90();
+	}
+
+	//Blurs the picture once horizontally
+	void blur_hor(){
+		vector<vector<Pixel>> temp_data;
+		for (int j = 0; j < _line_data.size(); j++) {
+			vector<Pixel> temp_line;
+			for (int i = 0; i < _line_data[j].size(); i++) {
+				Pixel a;
+				a.setMax(getColorVal());
+				int temp_red = 0;
+				int temp_green = 0;
+				int temp_blue = 0;
+				if (i == 0) {
+					temp_red = ((_line_data[j][i].getRed() + _line_data[j][i + 1].getRed())/2);
+					temp_green = ((_line_data[j][i].getGreen() + _line_data[j][i + 1].getGreen()) / 2);
+					temp_blue = ((_line_data[j][i].getBlue() + _line_data[j][i + 1].getBlue()) / 2);
+					a.setPixel(temp_red, temp_green, temp_blue);
+					temp_line.push_back(a);
+				}else if (i == _line_data[j].size() - 1){
+					temp_red = ((_line_data[j][i - 1].getRed() + _line_data[j][i].getRed()) / 2);
+					temp_green = ((_line_data[j][i - 1].getGreen() + _line_data[j][i].getGreen()) / 2);
+					temp_blue = ((_line_data[j][i - 1].getBlue() + _line_data[j][i].getBlue()) / 2);
+					a.setPixel(temp_red, temp_green, temp_blue);
+					temp_line.push_back(a);
+				}else {
+					temp_red = ((_line_data[j][i - 1].getRed() + _line_data[j][i].getRed() + _line_data[j][i + 1].getRed()) / 3);
+					temp_green = ((_line_data[j][i - 1].getGreen() + _line_data[j][i].getGreen() + _line_data[j][i + 1].getGreen()) / 3);
+					temp_blue = ((_line_data[j][i - 1].getBlue() + _line_data[j][i].getBlue() + _line_data[j][i + 1].getBlue()) / 3);
+					a.setPixel(temp_red, temp_green, temp_blue);
+					temp_line.push_back(a);
+				}
+			}
+			temp_data.push_back(temp_line);
+		}
+		_line_data.clear();
+		_line_data = temp_data;
+	}
+
+	//Blurs the pictures once vertically
+	void blur_ver() {
+		vector<vector<Pixel>> temp_data;
+		temp_data.resize(getHeight());
+		for (int i = 0; i < getWidth(); i++) {
+			vector<Pixel> temp_line;
+			for (int j = 0; j < _line_data.size(); j++) {
+				Pixel a;
+				a.setMax(getColorVal());
+				int temp_red = 0;
+				int temp_green = 0;
+				int temp_blue = 0;
+				if (j == 0) {
+					temp_red = ((_line_data[j][i].getRed() + _line_data[j + 1][i].getRed()) / 2);
+					temp_green = ((_line_data[j][i].getGreen() + _line_data[j + 1][i].getGreen()) / 2);
+					temp_blue = ((_line_data[j][i].getBlue() + _line_data[j + 1][i].getBlue()) / 2);
+				}
+				else if (j == (_line_data.size() - 1)) {
+					temp_red = ((_line_data[j - 1][i].getRed() + _line_data[j][i].getRed()) / 2);
+					temp_green = ((_line_data[j - 1][i].getGreen() + _line_data[j][i].getGreen()) / 2);
+					temp_blue = ((_line_data[j - 1][i].getBlue() + _line_data[j][i].getBlue()) / 2);
+				}
+				else {
+					temp_red = ((_line_data[j - 1][i].getRed() + _line_data[j][i].getRed() + _line_data[j + 1][i].getRed()) / 3);
+					temp_green = ((_line_data[j - 1][i].getGreen() + _line_data[j][i].getGreen() + _line_data[j + 1][i].getGreen()) / 3);
+					temp_blue = ((_line_data[j - 1][i].getBlue() + _line_data[j][i].getBlue() + _line_data[j + 1][i].getBlue()) / 3);
+					a.setPixel(temp_red, temp_green, temp_blue);
+					temp_data[j].push_back(a);
+				}
+				a.setPixel(temp_red, temp_green, temp_blue);
+				temp_data[j].push_back(a);
+			}
+		}
+		_line_data.clear();
+		_line_data = temp_data;
+	}
+
+	//Blurs the picture once, horizontally, and then vertically
+	void blur_single() {
+		blur_hor();
+		blur_ver();
+	}
+
+	//Blurs the picture 10 times,using the full blur loop (blur_single())
+	void blur() {
+		for (int i = 0; i < 10; i++) {
+			blur_single();
+		}
 	}
 
 	//takes int as parameter to choose how to edit the picture
@@ -329,6 +416,36 @@ public:
 				//Add high constrast to picture
 				contrastPixels();
 				cout << "Applying High Constrast effect..." ;
+				break;
+			case 10:
+				//Flips the Picture Horizontally
+				hor_flip();
+				cout << "Applying Horizontal Flip effect...";
+				break;
+			case 11:
+				//Flips the Picture Horizontally
+				ver_flip();
+				cout << "Applying Vertical Flip effect...";
+				break;
+			case 12:
+				//Rotates the picture 90 Degrees clockwise
+				rotate_90();
+				cout << "Applying 90 Degree Rotation...";
+				break;
+			case 13:
+				//Rotates the picture 90 Degrees clockwise
+				rotate_180();
+				cout << "Applying 180 Degree Rotation...";
+				break;
+			case 14:
+				//Rotates the picture 90 Degrees clockwise
+				rotate_270();
+				cout << "Applying 270 Degree Rotation...";
+				break;
+			case 16:
+				//Blurs the image
+				blur();
+				cout << "Applying Blur effect...";
 				break;
 			case 0:
 				//Choice to exit the function

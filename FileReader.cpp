@@ -3,22 +3,15 @@
 //Reads inputed file into a vector
 
 vector<string> file_reader(ifstream& Ifile) {
-
 	vector<string> result{};
-
 	if (Ifile.is_open() == true) {
-
 		string file_line;
-
 		while (Ifile.good() == true) {
-
 			getline(Ifile, file_line);
-
 			if (file_line.length() > 0) {
 				result.push_back(file_line);
 			}
 		}
-
 	}
 	return result;
 	}
@@ -29,7 +22,6 @@ vector<string> file_reader(const string& file_name) {
 	vector<string> result = file_reader(input);
 	input.close();
 	return result;
-
 }
 
 
