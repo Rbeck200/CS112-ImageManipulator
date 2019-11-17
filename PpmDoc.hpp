@@ -281,6 +281,33 @@ public:
 		rotate_90();
 	}
 
+	void pixelate(int distance) {
+		vector<vector<Pixel>> temp_matrix;
+		vector<Pixel> temp_line;
+		for (int j = 0; j < _line_data.size(); j++) {
+			Pixel temp_pixel;
+			if (j % distance == 0){
+				temp_line.clear();
+				for (int i = 0; i < _line_data[j].size(); i++) {
+					if (i % distance == 0) {
+						temp_pixel = _line_data[j][i];
+						temp_line.push_back(temp_pixel);
+					}
+					else {
+						temp_line.push_back(temp_pixel);
+					}
+				}
+				temp_matrix.push_back(temp_line);
+			}
+			else {
+				temp_matrix.push_back(temp_line);
+			}
+		}
+		_line_data.clear();
+		_line_data = temp_matrix;
+		
+	}
+
 	//Blurs the picture once horizontally
 	void blur_hor(){
 		vector<vector<Pixel>> temp_data;
@@ -370,6 +397,7 @@ public:
 
 	//takes int as parameter to choose how to edit the picture
 	void ImageManip(const int& selection) {
+		int temp = 1;
 		try {
 			switch (selection) {
 				//remove red from pixels
@@ -441,6 +469,13 @@ public:
 				//Rotates the picture 90 Degrees clockwise
 				rotate_270();
 				cout << "Applying 270 Degree Rotation...";
+				break;
+			case 15:
+				//Pixelates the image
+				cout << "Please enter the distance: ";
+				cin >> temp;
+				pixelate(temp);
+				cout << endl << "Applying pixelation effect...";
 				break;
 			case 16:
 				//Blurs the image
