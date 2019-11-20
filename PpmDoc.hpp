@@ -230,155 +230,271 @@ public:
 
 	//Flips the picture across the x-axis
 	void hor_flip() {
+
+		//Temporary matrix that will replace the main one
 		vector<vector<Pixel>> temp_data;
+
+		//For loop to iterate through our rows
 		for (int j = 0; j < getHeight(); j++) {
+
+			//Temporary line that will be put in the temp matrix
 			vector<Pixel> temp_line;
-			for (int i = (getWidth() - 1); i >= 0; i--) {
+
+			//For loop working on each pixel in the row, working backwards towards 0
+			for (int i = (getWidth() - 1); i >= 0; i--) {		
+
+				//Adds said pixel to the temp line
 				temp_line.push_back(_line_data[j][i]);
 			}
+			//Adds the temp line to the temp matrix
 			temp_data.push_back(temp_line);
 		}
+		//Clear main matrix
 		_line_data.clear();
+
+		//Replace with temp matrix
 		_line_data = temp_data;
 	}
 
 	//Flips the picture across the y-axis
 	void ver_flip() {
+
+		//Temporary matrix that will replace the main one
 		vector<vector<Pixel>> temp_data;
+
+		//For loop to iterate through our rows
 		for (int j = (getHeight() - 1); j >= 0; j--) {
+
+			//Adds row to our temp matrix
 			temp_data.push_back(_line_data[j]);
 		}
+		//Clear main matrix
 		_line_data.clear();
+
+		//Replace with temp matrix
 		_line_data = temp_data;
 	}
 
 	//Rotates the picture 90 Degrees clock-wise
 	void rotate_90() {
+
+		//Temporary matrix that will replace the main one
 		vector<vector<Pixel>> temp_data;
-		int temp = 0;
+
+		//Lets us work through the temp matrix column by column
 		for (int i = 0; i < getWidth(); i++) {
+
+			//Temporary line to add to our temp matrix
 			vector<Pixel> temp_line;
+
+			//Lets us work through the temp matrix's rows, starting at the last row
 			for (int j = (getHeight() - 1); j >= 0; j--) {
+
+				//Adds said pixel to our temp line
 				temp_line.push_back(_line_data[j][i]);
 			}
+			//Add said temp line to our temp matrix
 			temp_data.push_back(temp_line);
 		}
+		//Clear the main matrix
 		_line_data.clear();
+
+		//Replace the main matrix with the temp matrix
 		_line_data = temp_data;
+
+		//set width of the ppm document to the new width
 		setWidth(getHeight());
+
+		//set height of the ppm document to new height
 		setHeight(_line_data.size());
 	}
 
 	//Rotates the picture 180 Degrees clock-wise
 	void rotate_180() {
+		//I "cheated" because this is technically the same as a 180 rotation
 		hor_flip();
 		ver_flip();
 	}
 
 	//Rotates the picture 270 Degrees clock-wise
 	void rotate_270() {
+		//Added a rotation to my cheesy 180 rotation to make a 270 degree rotation
 		rotate_180();
 		rotate_90();
 	}
 
+	//Pixelates the image based upon a user submitted distance
 	void pixelate(int distance) {
+
+		//Temporary matrix that will replace the main one
 		vector<vector<Pixel>> temp_matrix;
+
+		//Temporary line to add to our temp matrix
 		vector<Pixel> temp_line;
+
+		//Lets us work through our temp matrix's rows
 		for (int j = 0; j < _line_data.size(); j++) {
+
+			//Temporary pixel to add to our temp line
 			Pixel temp_pixel;
+
+			//Lets us perform our needs if the remainder is 0
 			if (j % distance == 0){
+
+				//Clear the temp line
 				temp_line.clear();
+				
+				//Lets us go through the line
 				for (int i = 0; i < _line_data[j].size(); i++) {
+
+					//lets us perform if the remainder is 0
 					if (i % distance == 0) {
+
+						//set temp pixel to current pixel
 						temp_pixel = _line_data[j][i];
+
+						//Adds temp pixel to temp line
 						temp_line.push_back(temp_pixel);
 					}
 					else {
+						//Adds temp pixel to temp line
 						temp_line.push_back(temp_pixel);
 					}
 				}
+				//Adds temp line to temp matrix
 				temp_matrix.push_back(temp_line);
 			}
 			else {
+				//Adds temp line to temp matrix
 				temp_matrix.push_back(temp_line);
 			}
 		}
+		//Clears the main matrix
 		_line_data.clear();
+
+		//Replace the main matrix with the temp matrix
 		_line_data = temp_matrix;
 		
 	}
 
 	//Blurs the picture once horizontally
 	void blur_hor(){
+
+		//Temporary matrix that will replace the new one
 		vector<vector<Pixel>> temp_data;
+
+		//Lets us work through our row in the matrix
 		for (int j = 0; j < _line_data.size(); j++) {
+			
+			//Temporary line
 			vector<Pixel> temp_line;
+
+			//lets us work through each column on the row
 			for (int i = 0; i < _line_data[j].size(); i++) {
+
+				//Temporary Pixel
 				Pixel a;
+
+				//Sets temp pixels max color value
 				a.setMax(getColorVal());
+
+				//Initialize some temporary ints
 				int temp_red = 0;
 				int temp_green = 0;
 				int temp_blue = 0;
+
+				//Populates temp ints is column is 0
 				if (i == 0) {
 					temp_red = ((_line_data[j][i].getRed() + _line_data[j][i + 1].getRed())/2);
 					temp_green = ((_line_data[j][i].getGreen() + _line_data[j][i + 1].getGreen()) / 2);
 					temp_blue = ((_line_data[j][i].getBlue() + _line_data[j][i + 1].getBlue()) / 2);
-					a.setPixel(temp_red, temp_green, temp_blue);
-					temp_line.push_back(a);
-				}else if (i == _line_data[j].size() - 1){
+				}
+				//Populates temp ints if column is the last
+				else if (i == _line_data[j].size() - 1){
 					temp_red = ((_line_data[j][i - 1].getRed() + _line_data[j][i].getRed()) / 2);
 					temp_green = ((_line_data[j][i - 1].getGreen() + _line_data[j][i].getGreen()) / 2);
 					temp_blue = ((_line_data[j][i - 1].getBlue() + _line_data[j][i].getBlue()) / 2);
-					a.setPixel(temp_red, temp_green, temp_blue);
-					temp_line.push_back(a);
-				}else {
+				}
+				//Populates temp ints if any other column
+				else {
 					temp_red = ((_line_data[j][i - 1].getRed() + _line_data[j][i].getRed() + _line_data[j][i + 1].getRed()) / 3);
 					temp_green = ((_line_data[j][i - 1].getGreen() + _line_data[j][i].getGreen() + _line_data[j][i + 1].getGreen()) / 3);
 					temp_blue = ((_line_data[j][i - 1].getBlue() + _line_data[j][i].getBlue() + _line_data[j][i + 1].getBlue()) / 3);
-					a.setPixel(temp_red, temp_green, temp_blue);
-					temp_line.push_back(a);
 				}
+
+				//Sets temp pixel with those temp ints
+				a.setPixel(temp_red, temp_green, temp_blue);
+
+				//Adds temp pixel to temp line
+				temp_line.push_back(a);
 			}
+
+			//Adds temp line to temp data
 			temp_data.push_back(temp_line);
 		}
+
+		//Clears the main matrix
 		_line_data.clear();
+
+		//Replaces main matrix with our temp matrix
 		_line_data = temp_data;
 	}
 
 	//Blurs the pictures once vertically
 	void blur_ver() {
+
+		//Temporary Matrix that will replace the original one
 		vector<vector<Pixel>> temp_data;
-		temp_data.resize(getHeight());
+
+		//Resize our matrix to same size as our original one
+		temp_data.resize(_line_data.size());
+
+		//Lets us loop through the columns of the matrix
 		for (int i = 0; i < getWidth(); i++) {
-			vector<Pixel> temp_line;
+
+			//Lets us loop through the rows of the matrix
 			for (int j = 0; j < _line_data.size(); j++) {
+				
+				//Initialize temporary pixel
 				Pixel a;
+
+				//Sets the max color value of temporary pixel
 				a.setMax(getColorVal());
+
+				//Initialize some temporary temps
 				int temp_red = 0;
 				int temp_green = 0;
 				int temp_blue = 0;
+
+				//Populates temp if row is 0
 				if (j == 0) {
 					temp_red = ((_line_data[j][i].getRed() + _line_data[j + 1][i].getRed()) / 2);
 					temp_green = ((_line_data[j][i].getGreen() + _line_data[j + 1][i].getGreen()) / 2);
 					temp_blue = ((_line_data[j][i].getBlue() + _line_data[j + 1][i].getBlue()) / 2);
 				}
+				//Populates temp if row is last
 				else if (j == (_line_data.size() - 1)) {
 					temp_red = ((_line_data[j - 1][i].getRed() + _line_data[j][i].getRed()) / 2);
 					temp_green = ((_line_data[j - 1][i].getGreen() + _line_data[j][i].getGreen()) / 2);
 					temp_blue = ((_line_data[j - 1][i].getBlue() + _line_data[j][i].getBlue()) / 2);
 				}
+				//Populates temp if row is any other one
 				else {
 					temp_red = ((_line_data[j - 1][i].getRed() + _line_data[j][i].getRed() + _line_data[j + 1][i].getRed()) / 3);
 					temp_green = ((_line_data[j - 1][i].getGreen() + _line_data[j][i].getGreen() + _line_data[j + 1][i].getGreen()) / 3);
 					temp_blue = ((_line_data[j - 1][i].getBlue() + _line_data[j][i].getBlue() + _line_data[j + 1][i].getBlue()) / 3);
-					a.setPixel(temp_red, temp_green, temp_blue);
-					temp_data[j].push_back(a);
 				}
+				//Sets temp pixel with those temp ints
 				a.setPixel(temp_red, temp_green, temp_blue);
+
+				//Adds pixel to each row
 				temp_data[j].push_back(a);
 			}
 		}
+		//Clears the original matrix 
 		_line_data.clear();
+
+		//Sets the original matrix to the temp matrix
 		_line_data = temp_data;
 	}
 
