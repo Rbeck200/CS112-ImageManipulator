@@ -604,7 +604,7 @@ public:
 				break;
 			default:
 				//No selection made
-				throw exception{ "Invalid Selection" };
+				throw exception{ "Invalid Selection " };
 				break;
 			}
 		}
